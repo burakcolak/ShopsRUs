@@ -4,5 +4,6 @@ namespace ShopsRUs.Application.Interfaces.Services;
 
 public interface IDiscountService
 {
-    decimal GetDiscountedAmount(Product product, Customer customer);
+    decimal GetPercentageDiscountedAmount(Product product, Customer customer);
+    decimal CalculateDiscountedTotalAmount(decimal totalAmount);
 }
