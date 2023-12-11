@@ -1,15 +1,28 @@
+using ShopsRUs.Application;
+using ShopsRUs.PublicApi;
+
 var builder = WebApplication.CreateBuilder(args);
+{
 
-// Add services to the container.
-
-builder.Services.AddControllers();
+    builder.Services
+        .AddPresentation()
+        .AddApplication();
+};
 
 var app = builder.Build();
+{
+    app.UseDeveloperExceptionPage();
 
-// Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
 
-app.UseAuthorization();
+    app.UseHttpsRedirection();
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.MapControllers();
 
-app.MapControllers();
-
-app.Run();
+    app.Run();
+}

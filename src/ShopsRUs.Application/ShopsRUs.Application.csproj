@@ -10,4 +10,8 @@
     <ProjectReference Include="..\ShopsRUs.Domain\ShopsRUs.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+
 </Project>
