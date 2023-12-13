@@ -4,6 +4,7 @@ using ShopsRUs.Application.Discounts;
 using ShopsRUs.Application.Interfaces.Services;
 using ShopsRUs.Application.Invoices;
 using ShopsRUs.Common.Enums;
+using ShopsRUs.Contracts.Public.Invoice;
 using ShopsRUs.Domain;
 using Xunit;
 
@@ -33,20 +34,19 @@ public class InvoiceServiceTests
     public void GenerateInvoice_WithAffiliateDiscountAndTotalAmountDiscount_ReturnsCorrectInvoice()
     {
         // Arrange
-        var products = new List<Product>
+        var products = new List<ProductRequest>
         {
-            new Product { Name = "Product 1", Price = 100, Category = ProductCategory.Other },
-            new Product { Name = "Product 2", Price = 100, Category = ProductCategory.Other },
-            new Product { Name = "Product 3", Price = 100, Category = ProductCategory.Other },
+            new ProductRequest { Name = "Product 1", Price = 100, Category = ProductCategory.Other },
+            new ProductRequest { Name = "Product 2", Price = 100, Category = ProductCategory.Other },
+            new ProductRequest { Name = "Product 3", Price = 100, Category = ProductCategory.Other },
         };
-        var customer = new Customer { Name = "John Doe", IsEmployee = false, IsAffiliate = true, CreatedAt = DateTime.Now.AddYears(-1) };
+        var customer = new CustomerRequest { Name = "John Doe", IsEmployee = false, IsAffiliate = true, CreatedAt = DateTime.Now.AddYears(-1) };
 
         // Act
         var result = _invoiceService.GenerateInvoice(products, customer);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(customer, result.Customer);
         Assert.Equal(products.Count, result.Products.Count);
 
         decimal totalPriceBeforeDiscount = products.Sum(p => p.Price);
@@ -64,20 +64,19 @@ public class InvoiceServiceTests
     public void GenerateInvoice_WithEmployeeDiscountAndTotalAmountDiscount_ReturnsCorrectInvoice()
     {
         // Arrange
-        var products = new List<Product>
+        var products = new List<ProductRequest>
         {
-            new Product { Name = "Product 1", Price = 100, Category = ProductCategory.Other },
-            new Product { Name = "Product 2", Price = 50, Category = ProductCategory.Other },
+            new ProductRequest { Name = "Product 1", Price = 100, Category = ProductCategory.Other },
+            new ProductRequest { Name = "Product 2", Price = 50, Category = ProductCategory.Other },
         };
 
-        var customer = new Customer { IsEmployee = true };
+        var customer = new CustomerRequest { IsEmployee = true };
 
         // Act
         var result = _invoiceService.GenerateInvoice(products, customer);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(customer, result.Customer);
         Assert.Equal(products.Count, result.Products.Count);
 
         decimal totalPriceBeforeDiscount = products.Sum(p => p.Price);
@@ -96,19 +95,18 @@ public class InvoiceServiceTests
     public void GenerateInvoice_WithLoyaltyDiscountAndTotalAmountDiscount_ReturnsCorrectInvoice()
     {
         // Arrange
-        var products = new List<Product>
+        var products = new List<ProductRequest>
         {
-            new Product { Name = "Product 1", Price = 100, Category = ProductCategory.Other },
-            new Product { Name = "Product 2", Price = 250, Category = ProductCategory.Other },
+            new ProductRequest { Name = "Product 1", Price = 100, Category = ProductCategory.Other },
+            new ProductRequest { Name = "Product 2", Price = 250, Category = ProductCategory.Other },
         };
 
-        var customer = new Customer { CreatedAt = DateTime.Now.AddYears(-2) };
+        var customer = new CustomerRequest { CreatedAt = DateTime.Now.AddYears(-2) };
 
         // Act
         var result = _invoiceService.GenerateInvoice(products, customer);
 
         // Assert
-        Assert.Equal(customer, result.Customer);
         Assert.Equal(products.Count, result.Products.Count);
 
         decimal totalPriceBeforeDiscount = products.Sum(p => p.Price);
@@ -127,20 +125,19 @@ public class InvoiceServiceTests
     public void GenerateInvoice_WithEmployeeDiscountWithoutGroceryProductsAndTotalAmountDiscount_ReturnsCorrectInvoice()
     {
         // Arrange
-        var products = new List<Product>
+        var products = new List<ProductRequest>
         {
-            new Product { Name = "Product 1", Price = 100, Category = ProductCategory.Other },
-            new Product { Name = "Product 2", Price = 50, Category = ProductCategory.Grocery },
+            new ProductRequest { Name = "Product 1", Price = 100, Category = ProductCategory.Other },
+            new ProductRequest { Name = "Product 2", Price = 50, Category = ProductCategory.Grocery },
         };
 
-        var customer = new Customer { IsEmployee = true };
+        var customer = new CustomerRequest { IsEmployee = true };
 
         // Act
         var result = _invoiceService.GenerateInvoice(products, customer);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(customer, result.Customer);
         Assert.Equal(products.Count, result.Products.Count);
 
         decimal totalPriceBeforeDiscount = products.Sum(p => p.Price);
@@ -158,19 +155,18 @@ public class InvoiceServiceTests
     public void GenerateInvoice_WithLoyaltyAndAffiliateDiscount_ReturnsCorrectInvoice()
     {
         // Arrange
-        var products = new List<Product>
+        var products = new List<ProductRequest>
     {
-        new Product { Name = "Product 1", Price = 160, Category = ProductCategory.Other },
-        new Product { Name = "Product 2", Price = 30, Category = ProductCategory.Other },
+        new ProductRequest { Name = "Product 1", Price = 160, Category = ProductCategory.Other },
+        new ProductRequest { Name = "Product 2", Price = 30, Category = ProductCategory.Other },
     };
 
-        var customer = new Customer { IsAffiliate = true, CreatedAt = DateTime.Now.AddYears(-2) };
+        var customer = new CustomerRequest { IsAffiliate = true, CreatedAt = DateTime.Now.AddYears(-2) };
 
         // Act
         var result = _invoiceService.GenerateInvoice(products, customer);
 
         // Assert
-        Assert.Equal(customer, result.Customer);
         Assert.Equal(products.Count, result.Products.Count);
 
         decimal totalPriceBeforeDiscount = products.Sum(p => p.Price);
