@@ -1,7 +1,7 @@
 ﻿using ShopsRUs.Application.Interfaces.Services;
 using ShopsRUs.Domain;
 
-namespace ShopsRUs.Application.Discount;
+namespace ShopsRUs.Application.Invoices;
 
 public class InvoiceService : IInvoiceService
 {

@@ -1,7 +1,7 @@
 ﻿using ShopsRUs.Application.Interfaces.Services;
 using ShopsRUs.Domain;
 
-namespace ShopsRUs.Application.Discount;
+namespace ShopsRUs.Application.Discounts;
 
 public class DiscountService : IDiscountService
 {

@@ -1,5 +1,6 @@
-﻿using ShopsRUs.Application.Discount;
+﻿using ShopsRUs.Application.Discounts;
 using ShopsRUs.Application.Interfaces.Services;
+using ShopsRUs.Application.Invoices;
 using ShopsRUs.Common.Enums;
 using ShopsRUs.Domain;
 using Xunit;

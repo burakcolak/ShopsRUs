@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using ShopsRUs.Application.Discount;
+using ShopsRUs.Application.Discounts;
 using ShopsRUs.Application.Interfaces.Services;
+using ShopsRUs.Application.Invoices;
 
 namespace ShopsRUs.Application;
 public static class DependencyInjection
