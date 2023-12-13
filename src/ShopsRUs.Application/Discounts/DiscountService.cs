@@ -1,29 +1,37 @@
-﻿using ShopsRUs.Application.Interfaces.Services;
+﻿using Microsoft.Extensions.Options;
+using ShopsRUs.Application.Interfaces.Services;
 using ShopsRUs.Domain;
 
 namespace ShopsRUs.Application.Discounts;
 
 public class DiscountService : IDiscountService
 {
+    private readonly DiscountSettings _discountSettings;
+
+    public DiscountService(IOptions<DiscountSettings> discountSettings)
+    {
+        _discountSettings = discountSettings.Value;
+    }
+
     public decimal GetPercentageDiscountedAmount(Product product, Customer customer)
     {
         //Employee discount
         if (customer.IsEmployee)
         {
-            return CalculatePercentageDiscountedAmount(product, 30);
+            return CalculatePercentageDiscountedAmount(product, _discountSettings.EmployeeDiscountPercent);
         }
 
         //Affiliate discount
         if (customer.IsAffiliate)
         {
-            return CalculatePercentageDiscountedAmount(product, 10);
+            return CalculatePercentageDiscountedAmount(product, _discountSettings.AffiliateDiscountPercent);
         }
 
         //Customer loyalty discount (if customer for over 2 years)
         int customerAge = (DateTime.Now - customer.CreatedAt).Days;
-        if (customerAge >= 365 * 2)
+        if (customerAge >= 365 * _discountSettings.DiscountEligibilityYears)
         {
-            return CalculatePercentageDiscountedAmount(product, 5);
+            return CalculatePercentageDiscountedAmount(product, _discountSettings.CustomerLoyaltyDiscount);
         }
 
         return product.Price;
@@ -44,7 +52,7 @@ public class DiscountService : IDiscountService
     public decimal CalculateDiscountedTotalAmount(decimal totalAmount)
     {
         // Calculate $5 discount for every $100
-        decimal discount = Math.Floor(totalAmount / 100) * 5;
+        decimal discount = Math.Floor(totalAmount / _discountSettings.TotalAmountForDiscount) * _discountSettings.DiscountAmount;
 
         return totalAmount - discount;
     }

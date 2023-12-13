@@ -1,4 +1,6 @@
-﻿using ShopsRUs.Application.Discounts;
+﻿using Microsoft.Extensions.Options;
+using Moq;
+using ShopsRUs.Application.Discounts;
 using ShopsRUs.Application.Interfaces.Services;
 using ShopsRUs.Common.Enums;
 using ShopsRUs.Domain;
@@ -11,7 +13,19 @@ public class DiscountServiceTests
 
     public DiscountServiceTests()
     {
-        _discountService = new DiscountService();
+        var mockOptions = new Mock<IOptions<DiscountSettings>>();
+        var discountSettings = new DiscountSettings
+        {
+            EmployeeDiscountPercent = 30,
+            AffiliateDiscountPercent = 10,
+            CustomerLoyaltyDiscount = 5,
+            DiscountEligibilityYears = 2,
+            TotalAmountForDiscount = 100,
+            DiscountAmount = 5
+        };
+
+        mockOptions.Setup(o => o.Value).Returns(discountSettings);
+        _discountService = new DiscountService(mockOptions.Object);
     }
 
     [Fact]
