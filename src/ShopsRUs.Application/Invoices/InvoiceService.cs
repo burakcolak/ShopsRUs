@@ -1,4 +1,5 @@
 ﻿using ShopsRUs.Application.Interfaces.Services;
+using ShopsRUs.Contracts.Public.Invoice;
 using ShopsRUs.Domain;
 
 namespace ShopsRUs.Application.Invoices;
@@ -12,14 +13,28 @@ public class InvoiceService : IInvoiceService
         _discountService = discountService;
     }
 
-    public Invoice GenerateInvoice(List<Product> products, Customer customer)
+    public Invoice GenerateInvoice(List<ProductRequest> products, CustomerRequest customerRequest)
     {
+        Customer customer = new Customer
+        {
+            Name = customerRequest.Name,
+            IsEmployee = customerRequest.IsEmployee,
+            IsAffiliate = customerRequest.IsAffiliate,
+            CreatedAt = customerRequest.CreatedAt
+        };
+
         decimal totalPriceBeforeDiscount = products.Sum(p => p.Price);
 
         // Apply percentage discounts to each product
         List<Product> discountedProducts = products.Select(product =>
         {
-            decimal discountedPrice = _discountService.GetPercentageDiscountedAmount(product, customer);
+            decimal discountedPrice = _discountService.GetPercentageDiscountedAmount(new Product
+            {
+                Name = product.Name,
+                Category = product.Category,
+                Price = product.Price
+            }, customer);
+
             return new Product
             {
                 Name = product.Name,
